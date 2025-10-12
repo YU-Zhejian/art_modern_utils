@@ -142,20 +142,15 @@ def make_linear_base_groups(max_length: int) -> List[Tuple[int, int]]:
 
 
 def boxplot_metadata(quals: npt.NDArray, qual_counts: npt.NDArray) -> Mapping[str, float | List[float]]:
-    q1 = weighted_percentile(quals, qual_counts, 25)
-    med = weighted_percentile(quals, qual_counts, 50)
-    q3 = weighted_percentile(quals, qual_counts, 75)
-    mean = np.average(quals, weights=qual_counts)
-
-    iqr = q3 - q1
-    lower_fence = q1 - 1.5 * iqr
-    upper_fence = q3 + 1.5 * iqr
-
-    # Whiskers: min/max within fences
-    whislo = weighted_percentile(quals, qual_counts, 10)
-    whishi = weighted_percentile(quals, qual_counts, 90)
-
-    return {"whislo": whislo, "whishi": whishi, "q1": q1, "med": med, "q3": q3, "mean": mean, "fliers": []}
+    return {
+        "whislo": weighted_percentile(quals, qual_counts, 10),
+        "q1": weighted_percentile(quals, qual_counts, 25),
+        "med": weighted_percentile(quals, qual_counts, 50),
+        "q3": weighted_percentile(quals, qual_counts, 75),
+        "whishi": weighted_percentile(quals, qual_counts, 90),
+        "mean": np.average(quals, weights=qual_counts),
+        "fliers": [],
+    }
 
 
 def main():
@@ -163,7 +158,9 @@ def main():
     parser = argparse.ArgumentParser(description="Generate boxplot from ART profile quality distribution")
     parser.add_argument("--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("--input", type=str, help="Input file (default: stdin)", default="/dev/stdin")
-    parser.add_argument("--output", type=str, help="Output figure file. If unset, the plot will be shown interactively.", default=None)
+    parser.add_argument(
+        "--output", type=str, help="Output figure file. If unset, the plot will be shown interactively.", default=None
+    )
     args = parser.parse_args()
     actual_max_qual = 0
     boxplot_data = []
@@ -232,6 +229,7 @@ def main():
         plt.savefig(args.output, dpi=100)
     else:
         plt.show()
+
 
 if __name__ == "__main__":
     main()

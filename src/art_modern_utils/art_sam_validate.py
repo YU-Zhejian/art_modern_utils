@@ -8,7 +8,6 @@ This script will work on sequences that are mapped to the opposite strand since 
 > For segments that have been mapped to the reverse strand, the recorded SEQ is reverse complemented from the original
 > unmapped sequence and CIGAR, QUAL, and strand-sensitive optional fields are reversed and thus recorded
 > consistently with the sequence bases as represented.
-
 """
 
 import pysam
@@ -80,6 +79,7 @@ def main():
         "NEG": 0,
     }
     with pysam.FastaFile(ref) as ref_file, pysam.AlignmentFile(alignment, "rb", check_sq=False) as alignment_file:
+        # TODO: This leads to OOM.
         alignments = list(alignment_file)
         if not alignments:
             raise ValueError("No alignments found")
