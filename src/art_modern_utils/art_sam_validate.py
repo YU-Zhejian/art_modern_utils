@@ -9,9 +9,9 @@ This script will work on sequences that are mapped to the opposite strand since 
 > unmapped sequence and CIGAR, QUAL, and strand-sensitive optional fields are reversed and thus recorded
 > consistently with the sequence bases as represented.
 """
+import argparse
 
 import pysam
-import sys
 import tqdm
 
 
@@ -72,18 +72,19 @@ class CigarOps:
 
 
 def main():
-    _, ref, alignment = sys.argv
+    parser = argparse.ArgumentParser(description="Test whether a SAM/BAM is correct.")
+    parser.add_argument("ref", help="Reference FASTA file")
+    parser.add_argument("alignment", help="Alignment BAM/SAM file")
+    args = parser.parse_args()
     flags = {
         "UNALIGNED": 0,
         "POS": 0,
         "NEG": 0,
     }
-    with pysam.FastaFile(ref) as ref_file, pysam.AlignmentFile(alignment, "rb", check_sq=False) as alignment_file:
-        # TODO: This leads to OOM.
-        alignments = list(alignment_file)
-        if not alignments:
-            raise ValueError("No alignments found")
-        for aln in tqdm.tqdm(alignments):
+    read_id = 0
+    with pysam.FastaFile(args.ref) as ref_file, pysam.AlignmentFile(args.alignment, "rb", check_sq=False) as alignment_file:
+        for aln in tqdm.tqdm(alignment_file):
+            read_id += 1
             if aln.is_unmapped:
                 flags["UNALIGNED"] += 1
                 continue
@@ -119,10 +120,16 @@ def main():
                     genomic_ptr += cigar_len
                 if cigar_op == CigarOps.BAM_CREF_SKIP:
                     exon_no += 1
-            assert genomic_ptr == aln.reference_end, f"{genomic_ptr} != {aln.reference_end} {where_we_are()}"
-            assert query_ptr == len(query_seq), f"{query_ptr} != {len(query_seq)} {where_we_are()}"
-            assert ref_ptr == len(ref_seq), f"{ref_ptr} != {len(ref_seq)} {where_we_are()}"
+            assert (
+                genomic_ptr == aln.reference_end
+            ), f"genomic_ptr ({genomic_ptr}) != aln.reference_end ({aln.reference_end}) {where_we_are()}"
+            assert query_ptr == len(
+                query_seq
+            ), f"query_ptr ({query_ptr}) != query_seq({len(query_seq)}) {where_we_are()}"
+            assert ref_ptr == len(ref_seq), f"ref_ptr ({ref_ptr}) != ref_seq ({len(ref_seq)}) {where_we_are()}"
     print(flags)
+    if read_id == 0:
+        raise ValueError("No alignments found")
 
 
 if __name__ == "__main__":

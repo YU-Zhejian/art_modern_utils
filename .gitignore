@@ -472,3 +472,5 @@ syq_article_simulation2
 *.2bit
 logs/
 RM_*
+!requirements.txt
+.idea/

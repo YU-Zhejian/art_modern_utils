@@ -8,7 +8,7 @@ From file: <uk/ac/babraham/FastQC/Graphs/BaseGroup.java>
 
 Under the GPL v3 license
 
- * Copyright Copyright 2010-17 Simon Andrews
+ * Copyright 2010-17 Simon Andrews
  *
  *    This file is part of FastQC.
  *
@@ -30,7 +30,7 @@ Under the GPL v3 license
 import os
 import sys
 import argparse
-from typing import Tuple, List, Mapping
+from typing import Tuple, List, Mapping, Union
 
 try:
     import matplotlib.pyplot as plt
@@ -72,7 +72,7 @@ def weighted_percentile(quals: npt.NDArray, qual_counts: npt.NDArray, percentile
     cum_counts = np.cumsum(qual_counts)
     total = cum_counts[-1]
     idx = np.searchsorted(cum_counts, percentile / 100 * total)
-    return quals[min(idx, len(quals) - 1)]
+    return quals[min(idx.item(), len(quals) - 1)].item()
 
 
 def get_linear_interval(length: int) -> int:
@@ -141,7 +141,7 @@ def make_linear_base_groups(max_length: int) -> List[Tuple[int, int]]:
     return groups
 
 
-def boxplot_metadata(quals: npt.NDArray, qual_counts: npt.NDArray) -> Mapping[str, float | List[float]]:
+def boxplot_metadata(quals: npt.NDArray, qual_counts: npt.NDArray) -> Mapping[str, Union[float, List[float]]]:
     return {
         "whislo": weighted_percentile(quals, qual_counts, 10),
         "q1": weighted_percentile(quals, qual_counts, 25),
