@@ -123,3 +123,7 @@ def main():
             assert query_ptr == len(query_seq), f"{query_ptr} != {len(query_seq)} {where_we_are()}"
             assert ref_ptr == len(ref_seq), f"{ref_ptr} != {len(ref_seq)} {where_we_are()}"
     print(flags)
+
+
+if __name__ == "__main__":
+    main()
