@@ -5,7 +5,7 @@ git ls-files |
         if [ -e "${line}" ]; then
             {
                 echo DOS2UNIX "${line}"
-                dos2unix --keepdate "${line}"
+                dos2unix --keepdate "${line}" &>/dev/null
             } &
         fi
     done
