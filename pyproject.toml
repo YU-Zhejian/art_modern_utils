@@ -37,6 +37,10 @@ dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
 [project.urls]
 Source = "https://github.com/YU-Zhejian/art_modern_utils"
 
+[project.scripts]
+art-profile-fastqc = "art_modern_utils.art_profile_fastqc:main"
+art-sam-validate = "art_modern_utils.art_sam_validate:main"
+
 [tool.setuptools]
 license-files = ["License.md", "Copying.md"]
 

@@ -154,7 +154,7 @@ def boxplot_metadata(quals: npt.NDArray, qual_counts: npt.NDArray) -> Mapping[st
     return {"whislo": whislo, "whishi": whishi, "q1": q1, "med": med, "q3": q3, "mean": mean, "fliers": []}
 
 
-if __name__ == "__main__":
+def main():
     # TODO: Add --sep_flag
     parser = argparse.ArgumentParser(description="Generate boxplot from ART profile quality distribution")
     parser.add_argument("--version", action="version", version="%(prog)s " + __version__)

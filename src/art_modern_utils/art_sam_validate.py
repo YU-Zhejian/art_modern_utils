@@ -72,7 +72,7 @@ class CigarOps:
     )
 
 
-if __name__ == "__main__":
+def main():
     _, ref, alignment = sys.argv
     flags = {
         "UNALIGNED": 0,
