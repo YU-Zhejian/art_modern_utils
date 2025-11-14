@@ -1,8 +1,17 @@
 # `art_modern_utils`: Python Utilities for `art_modern`
 
-**NOTE**: This package is still under development.
-
+Badges:
+[![Python version](https://img.shields.io/badge/python-3.9-blue)](https://www.python.org/downloads/)
+[![PyPI - Version](https://img.shields.io/pypi/v/art-modern-utils)](https://pypi.org/project/art-modern-utils/)
+[![GitHub Release](https://img.shields.io/github/v/release/YU-Zhejian/art_modern_utils)](https://github.com/YU-Zhejian/art_modern_utils/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/YU-Zhejian/art_modern_utils/total.svg?style=social&logo=github&label=Download)](https://github.com/YU-Zhejian/art_modern_utils/releases)
+[![GitHub Contributors](https://img.shields.io/github/contributors/YU-Zhejian/art_modern_utils)](https://github.com/YU-Zhejian/art_modern_utils)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License](https://img.shields.io/badge/licence-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+URLs: [PYPI](https://pypi.org/project/art-modern-utils/), [GitHub](https://github.com/YU-Zhejian/art_modern_utils).
+
+**NOTE**: This package is still under development.
 
 Here presents `art_modern_utils`, a collection of Python utilities for `art_modern`. In detail, it contains:
 
