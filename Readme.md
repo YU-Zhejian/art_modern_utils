@@ -1,4 +1,4 @@
-# `art_modern_utils`: Python Ultilities for `art_modern`
+# `art_modern_utils`: Python Utilities for `art_modern`
 
 **NOTE**: This package is still under development.
 

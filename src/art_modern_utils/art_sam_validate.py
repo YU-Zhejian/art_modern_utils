@@ -9,6 +9,7 @@ This script will work on sequences that are mapped to the opposite strand since 
 > unmapped sequence and CIGAR, QUAL, and strand-sensitive optional fields are reversed and thus recorded
 > consistently with the sequence bases as represented.
 """
+
 import argparse
 
 import pysam
@@ -82,7 +83,9 @@ def main():
         "NEG": 0,
     }
     read_id = 0
-    with pysam.FastaFile(args.ref) as ref_file, pysam.AlignmentFile(args.alignment, "rb", check_sq=False) as alignment_file:
+    with pysam.FastaFile(args.ref) as ref_file, pysam.AlignmentFile(
+        args.alignment, "r" if args.alignment.endswith(".sam") else "rb", check_sq=False
+    ) as alignment_file:
         for aln in tqdm.tqdm(alignment_file):
             read_id += 1
             if aln.is_unmapped:

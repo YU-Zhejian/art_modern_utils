@@ -474,3 +474,4 @@ logs/
 RM_*
 !requirements.txt
 .idea/
+/.pypirc
