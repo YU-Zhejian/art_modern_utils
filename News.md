@@ -1,5 +1,9 @@
 # News
 
+## 1.0.1 (Ongoing)
+
+- Miscellaneous bug fixes.
+
 ## 1.0.0 (2026-02-25)
 
 - Miscellaneous bug fixes.
