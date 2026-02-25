@@ -9,3 +9,7 @@ fmt:
 .PHONY: twine
 twine:
 	python -m twine upload --config-file .pypirc dist/*
+
+.PNONY: build
+build:
+	python -m build
