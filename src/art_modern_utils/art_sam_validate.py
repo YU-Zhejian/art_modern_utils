@@ -1,15 +1,3 @@
-"""
-Test whether a SAM/BAM is correct.
-
-Synopsis: $0 ref.fa file.bam
-
-This script will work on sequences that are mapped to the opposite strand since in SAMv1.pdf, there is:
-
-> For segments that have been mapped to the reverse strand, the recorded SEQ is reverse complemented from the original
-> unmapped sequence and CIGAR, QUAL, and strand-sensitive optional fields are reversed and thus recorded
-> consistently with the sequence bases as represented.
-"""
-
 import argparse
 
 import pysam

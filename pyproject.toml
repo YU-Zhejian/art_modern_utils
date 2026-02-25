@@ -42,7 +42,7 @@ art-profile-fastqc = "art_modern_utils.art_profile_fastqc:main"
 art-sam-validate = "art_modern_utils.art_sam_validate:main"
 
 [tool.setuptools]
-license-files = ["License.md", "Copying.md"]
+license-files = ["License.md"]
 
 [tool.setuptools.dynamic]
 version = { attr = "art_modern_utils.__version__" }
