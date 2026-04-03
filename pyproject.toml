@@ -51,3 +51,6 @@ dependencies = { file = "requirements.txt" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tools.isort]
+profile = "black"

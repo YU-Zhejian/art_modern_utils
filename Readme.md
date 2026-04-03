@@ -18,15 +18,21 @@ Here presents `art_modern_utils`, a collection of Python utilities for [`art_mod
 
 ```text
 $ art-profile-fastqc --help
-usage: art-profile-fastqc [-h] [--version] [--input INPUT] [--output OUTPUT]
+usage: art_profile_fastqc.py [-h] [--version] [-i INPUT] [-o OUTPUT] [--dpi DPI] [--figwidth FIGWIDTH] [--figheight FIGHEIGHT]
 
 Generate boxplot from ART profile quality distribution
 
 options:
-  -h, --help       show this help message and exit
-  --version        show program's version number and exit
-  --input INPUT    Input file (default: stdin)
-  --output OUTPUT  Output figure file. If unset, the plot will be shown interactively
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -i INPUT, --input INPUT
+                        Input file (default: stdin)
+  -o OUTPUT, --output OUTPUT
+                        Output figure file. If unset, the plot will be shown interactively.
+  --dpi DPI             DPI of figure (default: 300)
+  --figwidth FIGWIDTH   Figure width (default: 8in)
+  --figheight FIGHEIGHT
+                        Figure height (default: 6in)
 ```
 
 Usage Example:

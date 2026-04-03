@@ -27,10 +27,11 @@ Under the GPL v3 license
  *    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 """
 
+import argparse
+import logging
 import os
 import sys
-import argparse
-from typing import Tuple, List, Mapping, Union
+from typing import List, Mapping, Tuple, Union
 
 try:
     import matplotlib.pyplot as plt
@@ -48,10 +49,13 @@ except ImportError:
     print("numpy is required for this script", file=sys.stderr)
     sys.exit(1)
 
+
+_lh = logging.getLogger("art-profile-fastqc")
+
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(SCRIPT_PATH, ".."))
 
-from art_modern_utils import __version__, QUAL_MAX
+from art_modern_utils import QUAL_MAX, __version__
 
 
 def weighted_percentile(quals: npt.NDArray, qual_counts: npt.NDArray, percentile: int) -> float:
@@ -154,13 +158,22 @@ def boxplot_metadata(quals: npt.NDArray, qual_counts: npt.NDArray) -> Mapping[st
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     # TODO: Add --sep_flag
     parser = argparse.ArgumentParser(description="Generate boxplot from ART profile quality distribution")
     parser.add_argument("--version", action="version", version="%(prog)s " + __version__)
-    parser.add_argument("--input", type=str, help="Input file (default: stdin)", default="/dev/stdin")
+    parser.add_argument("-i", "--input", type=str, help="Input file (default: stdin)", default="/dev/stdin")
     parser.add_argument(
-        "--output", type=str, help="Output figure file. If unset, the plot will be shown interactively.", default=None
+        "-o",
+        "--output",
+        type=str,
+        help="Output figure file. If unset, the plot will be shown interactively.",
+        default=None,
     )
+    parser.add_argument("--dpi", type=int, help="DPI of figure (default: 300)", default=300)
+    parser.add_argument("--figwidth", type=float, help="Figure width (default: 8in)", default=8)
+    parser.add_argument("--figheight", type=float, help="Figure height (default: 6in)", default=6)
+    _lh.info("Started")
     args = parser.parse_args()
     actual_max_qual = 0
     boxplot_data = []
@@ -174,6 +187,12 @@ def main():
                 if not next_l.startswith("."):
                     break
                 quals_list.append(list(map(int, l.strip().split("\t")[2:])))
+                if not quals_list[-1]:
+                    _lh.error(
+                        f"Found empty quality scores for position {len(quals_list)}. "
+                        "This may indicate that the actual read length of source FASTQ is smaller than this value. "
+                    )
+                    sys.exit(1)
                 actual_max_qual = max(actual_max_qual, *quals_list[-1])
                 accumulated_counts = list(map(int, next_l.strip().split("\t")[2:]))
                 not_accumulated_counts = [accumulated_counts[0]]
@@ -181,8 +200,9 @@ def main():
                     not_accumulated_counts.append(accumulated_counts[i] - accumulated_counts[i - 1])
 
                 qual_counts_list.append(not_accumulated_counts)
-
+    num_bases = sum(sum(x) for x in qual_counts_list)
     read_len = len(quals_list)
+    _lh.info("Processed %d bases with read length %d", num_bases, read_len)
     lingrp = make_linear_base_groups(read_len)  # 0-based incl. excl.
     for lingrp_idx_start, lingrp_idx_end in lingrp:
         combined_quals = []
@@ -206,7 +226,7 @@ def main():
         boxplot_data.append(boxplot_metadata(np.array(combined_dedup_quals), np.array(combined_dedup_qual_counts)))
         means.append(boxplot_data[-1]["mean"])
 
-    _, ax = plt.subplots(figsize=(8, 6))
+    _, ax = plt.subplots(figsize=(args.figwidth, args.figheight))
     ax.bxp(boxplot_data, positions=range(len(boxplot_data)), showmeans=False)
     x_names = []
     for lingrp_idx_start, lingrp_idx_end in lingrp:
@@ -226,9 +246,10 @@ def main():
     ax.legend()
     ax.set_ylim(0, actual_max_qual + 5)
     if args.output:
-        plt.savefig(args.output, dpi=100)
+        plt.savefig(args.output, dpi=args.dpi)
     else:
         plt.show()
+    _lh.info("Finished")
 
 
 if __name__ == "__main__":

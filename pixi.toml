@@ -20,3 +20,4 @@ bash = { version = ">=5.2.37,<6", channel = "conda-forge" }
 python-build = { version = ">=1.4.2,<2", channel = "conda-forge" }
 twine = { version = ">=6.2.0,<7", channel = "conda-forge" }
 setuptools = { version = ">=82.0.1,<83", channel = "conda-forge" }
+isort = ">=8.0.1,<9"
