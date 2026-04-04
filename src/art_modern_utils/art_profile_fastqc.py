@@ -180,6 +180,7 @@ def main():
     means = []
     quals_list = []
     qual_counts_list = []
+    uniq_quals = set()
     with open(args.input) as f:
         for l in f:
             if l.startswith("."):
@@ -193,6 +194,7 @@ def main():
                         "This may indicate that the actual read length of source FASTQ is smaller than this value. "
                     )
                     sys.exit(1)
+                uniq_quals.update(quals_list[-1])
                 actual_max_qual = max(actual_max_qual, *quals_list[-1])
                 accumulated_counts = list(map(int, next_l.strip().split("\t")[2:]))
                 not_accumulated_counts = [accumulated_counts[0]]
@@ -203,6 +205,9 @@ def main():
     num_bases = sum(sum(x) for x in qual_counts_list)
     read_len = len(quals_list)
     _lh.info("Processed %d bases with read length %d", num_bases, read_len)
+    _lh.info("Unique quality scores: %s scores from %d to %d", len(uniq_quals), min(uniq_quals), max(uniq_quals))
+    if len(uniq_quals) < 10:
+        _lh.warning("The qualities may be binned")
     lingrp = make_linear_base_groups(read_len)  # 0-based incl. excl.
     for lingrp_idx_start, lingrp_idx_end in lingrp:
         combined_quals = []
