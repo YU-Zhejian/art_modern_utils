@@ -33,6 +33,7 @@ git ls-files |
         if [ -e "${line}" ]; then
             {
                 echo BLACK "${line}"
+                isort --quiet "${line}"
                 black --line-length 120 --target-version py38 --quiet "${line}"
             } &
         fi

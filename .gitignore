@@ -475,3 +475,6 @@ RM_*
 !requirements.txt
 .idea/
 /.pypirc
+# pixi environments
+.pixi/*
+!.pixi/config.toml
