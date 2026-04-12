@@ -101,6 +101,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## News
 
+## 1.0.3 (2026-04-12)
+
+- `art-sam-validate`: Addded `allow-duplicated-cigar` and `allow-zero-length-cigar` options. Those options are disabled by default, they can be enabled to allow duplicated CIGAR strings and zero-length CIGAR strings, which are compliant with the SAM specification but looks weird.
+- Miscellaneous bug fixes.
+
 ### 1.0.2 (2026-04-04)
 
 - `art-profile-fastqc`: Detection of binned quality scores added.

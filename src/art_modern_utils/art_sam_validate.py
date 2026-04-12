@@ -64,6 +64,16 @@ def main():
     parser = argparse.ArgumentParser(description="Test whether a SAM/BAM is correct.")
     parser.add_argument("ref", help="Reference FASTA file")
     parser.add_argument("alignment", help="Alignment BAM/SAM file")
+    parser.add_argument(
+        "--allow-zero-length-cigar",
+        action="store_true",
+        help="Allow zero length cigars. E.g., 20M -> 10M0I10M",
+    )
+    parser.add_argument(
+        "--allow-duplicated-cigar",
+        action="store_true",
+        help="Allow duplicated cigars. E.g., 20M -> 10M10M",
+    )
     args = parser.parse_args()
     flags = {
         "UNALIGNED": 0,
@@ -93,9 +103,13 @@ def main():
             def where_we_are():
                 return f"{aln.query_name}:Q:{query_ptr}/R:{ref_ptr}/G:{genomic_ptr}/A:{aln.reference_name}:{aln.reference_start}-{aln.reference_end}:{'-' if aln.is_reverse else '+'} (cigar:{cigar_id}/{len(aln.cigartuples)}:{cigar_len}{CigarOps.INT_TO_STR[cigar_op]}) (exon:{exon_no})\n"
 
+            prev_cigar_op = None
             for cigar_id, (cigar_op, cigar_len) in enumerate(aln.cigartuples):
-                if cigar_len == 0:
+                if cigar_len == 0 and not args.allow_zero_length_cigar:
                     raise ValueError(f"Cigar length is zero {where_we_are()}")
+                if cigar_op == prev_cigar_op and not args.allow_duplicated_cigar:
+                    raise ValueError(f"Cigar operation is duplicated {where_we_are()}")
+                prev_cigar_op = cigar_op
                 if cigar_op == CigarOps.BAM_CEQUAL:
                     ref_seg = ref_seq[ref_ptr : ref_ptr + cigar_len]
                     query_seg = query_seq[query_ptr : query_ptr + cigar_len]
